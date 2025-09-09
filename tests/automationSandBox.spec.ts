@@ -1,4 +1,5 @@
 import { expect, test, Page, Browser } from '@playwright/test';
+import { SandboxPage } from './Pages/SandboxPage';
 
 (async () =>{
     let page: Page;
@@ -42,11 +43,11 @@ import { expect, test, Page, Browser } from '@playwright/test';
                 await page.goto("https://thefreerangetester.github.io/sandbox-automation-testing/")
             })
             await test.step('selecciono el checkbox deseado', async () => {
-                 
-                 await page.getByRole('checkbox', { name: 'Helado 🍧' }).check()
-                 await page.getByRole('checkbox', { name: 'Hamburguesa 🍔' }).check()
-                 await page.getByRole('checkbox', { name: 'Helado 🍧' }).uncheck()
-                 await expect(page.getByRole('checkbox', { name: 'Helado 🍧' })).not.toBeChecked()
+                 const pageSanbox = new SandboxPage(page);
+                 await pageSanbox.checkHelado();
+                 await pageSanbox.checkHamburguesa();
+                 await pageSanbox.unCheckHelado();
+                 await expect(pageSanbox.heladoCheckbox).not.toBeChecked();
             })
             
         })
@@ -126,10 +127,11 @@ import { expect, test, Page, Browser } from '@playwright/test';
                 await page.goto("https://thefreerangetester.github.io/sandbox-automation-testing/")
             })
             await test.step('Valido las opciones de los checkboxes', async () => {
+                const sandboxPage = new SandboxPage(page);
                 await expect.soft(page.getByText('Pizza 🍕'),"No se encontró el elemento buscado").toBeVisible();
-                await expect.soft(page.getByText('Hamburguesa 🍔'),"No se encontró el elemento buscado").toBeVisible();
+                await expect.soft(sandboxPage.hamburguesaCheckbox).toBeVisible();
                 await expect.soft(page.getByText('Pasta 🍝'),"No se encontró el elemento buscado").toBeVisible();
-                await expect.soft(page.getByText('Helado 🍧'),"No se encontró el elemento buscado").toBeVisible();
+                await expect.soft(sandboxPage.heladoCheckbox).toBeVisible();
                 //await expect.soft(page.getByText('Ensalada 🥗'),"No se encontró el elemento buscado").toBeVisible();
                 await expect.soft(page.getByText('Torta 🍰'),"No se encontró el elemento buscado").toBeVisible();
             })
